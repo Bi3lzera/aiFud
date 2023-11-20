@@ -46,20 +46,21 @@ namespace user_terminal
             int selectedOption;
 
             while(true){
-                Console.WriteLine("Dentre as opções abaixo, digite a opção desejada:");
-                Console.WriteLine("[1] - Inserir vendedor");  
+                Console.WriteLine("\nDIGITE A OPÇÃO DESEJADA:");
+                Console.WriteLine("[1] - Inserir vendedor");
+                Console.WriteLine("");  
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
                 if(nulo && selectedOption <= 1 && selectedOption >= 1) break;
-                else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
+                else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
             
             return selectedOption;
         }
 
         public string addVendor(){
-            Console.Write("Digite o nome do Vendedor: ");
+            Console.Write("DIGITE O NOME DO VENDEDOR: ");
             string name = Console.ReadLine()!;
             if(name == null) name = "";
             return name;
@@ -73,28 +74,32 @@ namespace user_terminal
             int selectedOption;
 
             while(true){
-                Console.WriteLine("Digite para selecionar em como quer filtrar:");
+                Console.WriteLine("\nDIGITE A OPÇÃO DESEJADA:\n");
+
+                Console.WriteLine("FILTRO:");
                 Console.WriteLine("[1] - Vendedores");  
                 Console.WriteLine("[2] - Tipo de Comida");
+
+                Console.WriteLine("\nOUTRAS OPÇÕES")
                 Console.WriteLine("\n[3] - Carrinho");
+                Console.WriteLine("[4] - Avaliar um Restaurante")
 
                 Console.WriteLine("\n[-1] - Voltar");
                 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption <= 3 && selectedOption >= 1) break;
+                if(nulo && selectedOption <= 4 && selectedOption >= 1) break;
                 else if (goBack(selectedOption)) return -1;
-                else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
+                else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
             
             return selectedOption;
         }
-
         public int option_availableFood(int cod, string filter){
             int selectedOption;
 
             while(true){
-                Console.WriteLine("SELECIONE A COMIDA DESEJADA DO CARDÁPIO:\n");
+                Console.WriteLine("\nSELECIONE A COMIDA DESEJADA DO CARDÁPIO:\n");
                 foreach(DataRow row in tempMemory.food.Rows){
                     if(row[4].ToString() == cod.ToString() && filter == "vendor"){
                         Console.WriteLine($"[{row[0]}] - {row[1]} : R${row[3]}");
@@ -105,39 +110,44 @@ namespace user_terminal
                     }
                 }
 
-                Console.WriteLine("\n[-1] - Voltar");
+                Console.WriteLine("\n[-1] - Voltar\n");
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
                 if(nulo && selectedOption < tempMemory.food.Rows.Count && selectedOption >= 0) break;
                 else if(goBack(selectedOption)) return -1;
-                else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
+                else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
             
             return selectedOption;
         }
-
-        public void listFoodType(){
+        public void listFoodType(bool justList = false){
             int selectedOption;
 
             while(true){
-                Console.WriteLine("SELECIONE O TIPO DE COMIDA DESEJADA:\n");
+                Console.WriteLine("\nSELECIONE O TIPO DE COMIDA DESEJADA:\n");
                 foreach(DataRow row in tempMemory.foodType.Rows){
                     Console.WriteLine($"[{row[0]}] - {row[1]}");
                 }
                 
-                Console.WriteLine("\n[-1] - Voltar");
+                if(justList) return;
+
+                Console.WriteLine("\n[-1] - Voltar\n");
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
                 if(nulo && selectedOption < tempMemory.foodType.Rows.Count && selectedOption >= 0) break;
                 else if (goBack(selectedOption)) return;
-                else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
+                else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
 
-            if(selectedOption != -1) addToCart(option_availableFood(selectedOption, "foodType"));
+            int foodOption;
+            if(selectedOption != -1) {
+                foodOption = option_availableFood(selectedOption, "foodType");
+                if(foodOption != -1) addToCart(foodOption);
+            }
         }
-        public void listVendors(){
+        public void listVendors(bool justList = false){
             int selectedOption;
 
             while(true){
@@ -145,17 +155,24 @@ namespace user_terminal
                 foreach(DataRow vendor in temp.tempMemory.vendor.Rows){
                     Console.WriteLine($"[{vendor[0]}] - {vendor[1]} (NOTA {vendor[2]}/{5.0})");
                 }
+                
+                if(justList) return;
+
+                Console.WriteLine("\n[-1] - Voltar");
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
                 if(nulo && selectedOption < tempMemory.vendor.Rows.Count && selectedOption >= 0) break;
                 else if (goBack(selectedOption)) return;
-                else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
+                else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
 
-            if(selectedOption != -1) addToCart(option_availableFood(Convert.ToInt32(temp.tempMemory.vendor.Rows[selectedOption][0]), "vendor"));
+            int foodOption;
+            if(selectedOption != -1) {
+                foodOption = option_availableFood(Convert.ToInt32(temp.tempMemory.vendor.Rows[selectedOption][0]), "vendor");
+                if(foodOption != -1) addToCart(foodOption);
+            }
         }
-
         public void addToCart(int codFood){
             Console.WriteLine("Digite a quantidade deste item. (Caso queira cancelar, digite 0)");
             Console.Write("QUANTIDADE: ");
@@ -184,6 +201,8 @@ namespace user_terminal
                     case 3:
                         listCart();
                         break;
+                    case 4:
+                        avaliate();
                     case -1:
                         return;
                     default:
@@ -191,7 +210,14 @@ namespace user_terminal
                 }
             }
         }
-
+        public void avaliate(){
+            WriteLine("DIGITE UM DOS RESTAURANTES A SEGUIR PARA AVALIAR\n");
+            listVendors(true);
+            
+            while(choosen < tempMemory.vendor.Rows.Count && choosen >= 0){
+                Console.WriteLine("\n***Digite um fornecedor válido***")
+            }      
+        }
         public void listCart(){
             decimal total = 0;
             Console.WriteLine("\n[Restaurante] Descrição : Qnt : Vlr Uni : Vlr Total");
@@ -219,7 +245,6 @@ namespace user_terminal
 
             return option;
         }
-
         public bool goBack(int typedNum){
             if(typedNum == -1) return true;
             else return false; 
