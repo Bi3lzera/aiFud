@@ -12,3 +12,17 @@ C:\Users\bielm\OneDrive\Arquivos\Área de Trabalho\Aulas 3º Semestre\Estrutura 
 C:\Users\bielm\OneDrive\Arquivos\Área de Trabalho\Aulas 3º Semestre\Estrutura de Dados\Códigos\proj_ifood\obj\Debug\net6.0\proj_ifood.pdb
 C:\Users\bielm\OneDrive\Arquivos\Área de Trabalho\Aulas 3º Semestre\Estrutura de Dados\Códigos\proj_ifood\obj\Debug\net6.0\proj_ifood.genruntimeconfig.cache
 C:\Users\bielm\OneDrive\Arquivos\Área de Trabalho\Aulas 3º Semestre\Estrutura de Dados\Códigos\proj_ifood\obj\Debug\net6.0\ref\proj_ifood.dll
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\bin\Debug\net6.0\proj_ifood.exe
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\bin\Debug\net6.0\proj_ifood.deps.json
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\bin\Debug\net6.0\proj_ifood.runtimeconfig.json
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\bin\Debug\net6.0\proj_ifood.dll
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\bin\Debug\net6.0\proj_ifood.pdb
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\proj_ifood.GeneratedMSBuildEditorConfig.editorconfig
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\proj_ifood.AssemblyInfoInputs.cache
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\proj_ifood.AssemblyInfo.cs
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\proj_ifood.csproj.CoreCompileInputs.cache
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\proj_ifood.dll
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\refint\proj_ifood.dll
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\proj_ifood.pdb
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\proj_ifood.genruntimeconfig.cache
+D:\Desktop\Biel Sync\C#\aiFud\aiFud\obj\Debug\net6.0\ref\proj_ifood.dll

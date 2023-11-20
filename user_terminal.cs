@@ -73,14 +73,17 @@ namespace user_terminal
             int selectedOption;
 
             while(true){
-                Console.WriteLine("Selecione em como quer filtrar:");
+                Console.WriteLine("Digite para selecionar em como quer filtrar:");
                 Console.WriteLine("[1] - Vendedores");  
                 Console.WriteLine("[2] - Tipo de Comida");
                 Console.WriteLine("\n[3] - Carrinho");
 
+                Console.WriteLine("\n[-1] - Voltar");
+                
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
                 if(nulo && selectedOption <= 3 && selectedOption >= 1) break;
+                else if (goBack(selectedOption)) return -1;
                 else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
             }
             
@@ -102,9 +105,12 @@ namespace user_terminal
                     }
                 }
 
+                Console.WriteLine("\n[-1] - Voltar");
+
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption <= 1 && selectedOption >= 1) break;
+                if(nulo && selectedOption < tempMemory.food.Rows.Count && selectedOption >= 0) break;
+                else if(goBack(selectedOption)) return -1;
                 else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
             }
             
@@ -119,14 +125,17 @@ namespace user_terminal
                 foreach(DataRow row in tempMemory.foodType.Rows){
                     Console.WriteLine($"[{row[0]}] - {row[1]}");
                 }
+                
+                Console.WriteLine("\n[-1] - Voltar");
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption <= tempMemory.foodType.Rows.Count && selectedOption >= 0) break;
+                if(nulo && selectedOption < tempMemory.foodType.Rows.Count && selectedOption >= 0) break;
+                else if (goBack(selectedOption)) return;
                 else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
             }
-            
-            addToCart(option_availableFood(selectedOption, "foodType"));
+
+            if(selectedOption != -1) addToCart(option_availableFood(selectedOption, "foodType"));
         }
         public void listVendors(){
             int selectedOption;
@@ -139,11 +148,12 @@ namespace user_terminal
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption <= tempMemory.vendor.Rows.Count && selectedOption >= 0) break;
+                if(nulo && selectedOption < tempMemory.vendor.Rows.Count && selectedOption >= 0) break;
+                else if (goBack(selectedOption)) return;
                 else Console.WriteLine("\nOpção digitada inválida, por favor, digite uma opção válida");
             }
 
-            addToCart(option_availableFood(Convert.ToInt32(temp.tempMemory.vendor.Rows[selectedOption][0]), "vendor"));
+            if(selectedOption != -1) addToCart(option_availableFood(Convert.ToInt32(temp.tempMemory.vendor.Rows[selectedOption][0]), "vendor"));
         }
 
         public void addToCart(int codFood){
@@ -158,34 +168,47 @@ namespace user_terminal
 
             Console.WriteLine($"\n{qntSelectedFood} unidade(s) de {tempMemory.food.Rows[codFood][1]}, do restaurante {tempMemory.vendor.Rows[Convert.ToInt32(tempMemory.food.Rows[codFood][4])][1]}, no valor unitário de R${tempMemory.food.Rows[codFood][3]} (total R${Convert.ToDecimal(tempMemory.food.Rows[codFood][3]) * qntSelectedFood}) foram adicionados ao carrinho!\n");
 
-            if(addMoreOrPay() == 1) listVendors();
+            if(addMoreOrPay() == 1) navigation();
             else payment.pay();
         }
         public void navigation(){
-            int option = option_filter();
-            switch(option){
-                case 1:
-                    listVendors();
-                    break;
-                case 2:
-                    listFoodType();
-                    break;
-                case 3:
-                    listCart();
-                    break;
-                default:
-                    break;
+            while(true){
+                int option = option_filter();
+                switch(option){
+                    case 1:
+                        listVendors();
+                        break;
+                    case 2:
+                        listFoodType();
+                        break;
+                    case 3:
+                        listCart();
+                        break;
+                    case -1:
+                        return;
+                    default:
+                        break;
+                }
             }
         }
 
         public void listCart(){
+            decimal total = 0;
+            Console.WriteLine("\n[Restaurante] Descrição : Qnt : Vlr Uni : Vlr Total");
+            Console.WriteLine("-----------------------------------------------------");
             foreach(DataRow item in tempMemory.cart.Rows){
                 string foodName = tempMemory.food.Rows[Convert.ToInt32(item[1])][1].ToString();
-                string vendorName;
-                string foodQnt;
-                string foodValue;
-                Console.WriteLine($"{foodName}");
+                string vendorName = tempMemory.vendor.Rows[Convert.ToInt32(item[0])][1].ToString();
+                string foodQnt = item[2].ToString();
+                string foodValue = tempMemory.food.Rows[Convert.ToInt32(item[1])][3].ToString();
+                Console.WriteLine($"[{vendorName}] {foodName} : {foodQnt} : R${foodValue} : R${Convert.ToDecimal(foodValue) * Convert.ToDecimal(foodQnt)}");
+                total += Convert.ToDecimal(foodValue) * Convert.ToDecimal(foodQnt);
             }
+            Console.WriteLine($"=====VALOR TOTAL: R${total}=====\n");
+            Console.WriteLine("Pressione enter para continuar.");
+            Console.ReadKey();
+
+            if(addMoreOrPay() == 2) payment.pay();
         }
         public int addMoreOrPay(){
             Console.WriteLine("Deseja adicionar mais itens ao carrinho ou deseja finalizar o pedido? \n[1] - ADIONAR MAIS ITENS\n[2] - FINALIZAR PEDIDO");
@@ -195,6 +218,11 @@ namespace user_terminal
             }
 
             return option;
+        }
+
+        public bool goBack(int typedNum){
+            if(typedNum == -1) return true;
+            else return false; 
         }
     }
 }

@@ -8,19 +8,24 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\bielm\\.nuget\\packages\\": {}
+    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\bielm\\OneDrive\\Arquivos\\Área de Trabalho\\Aulas 3º Semestre\\Estrutura de Dados\\Códigos\\proj_ifood\\proj_ifood.csproj",
+      "projectUniqueName": "D:\\Desktop\\Biel Sync\\C#\\aiFud\\aiFud\\proj_ifood.csproj",
       "projectName": "proj_ifood",
-      "projectPath": "C:\\Users\\bielm\\OneDrive\\Arquivos\\Área de Trabalho\\Aulas 3º Semestre\\Estrutura de Dados\\Códigos\\proj_ifood\\proj_ifood.csproj",
-      "packagesPath": "C:\\Users\\bielm\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\bielm\\OneDrive\\Arquivos\\Área de Trabalho\\Aulas 3º Semestre\\Estrutura de Dados\\Códigos\\proj_ifood\\obj\\",
+      "projectPath": "D:\\Desktop\\Biel Sync\\C#\\aiFud\\aiFud\\proj_ifood.csproj",
+      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+      "outputPath": "D:\\Desktop\\Biel Sync\\C#\\aiFud\\aiFud\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\bielm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -61,7 +66,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }
