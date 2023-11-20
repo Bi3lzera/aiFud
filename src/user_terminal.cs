@@ -80,9 +80,9 @@ namespace user_terminal
                 Console.WriteLine("[1] - Vendedores");  
                 Console.WriteLine("[2] - Tipo de Comida");
 
-                Console.WriteLine("\nOUTRAS OPÇÕES")
+                Console.WriteLine("\nOUTRAS OPÇÕES:");
                 Console.WriteLine("\n[3] - Carrinho");
-                Console.WriteLine("[4] - Avaliar um Restaurante")
+                Console.WriteLine("[4] - Avaliar um Restaurante");
 
                 Console.WriteLine("\n[-1] - Voltar");
                 
@@ -203,6 +203,7 @@ namespace user_terminal
                         break;
                     case 4:
                         avaliate();
+                        break;
                     case -1:
                         return;
                     default:
@@ -211,30 +212,43 @@ namespace user_terminal
             }
         }
         public void avaliate(){
-            WriteLine("DIGITE UM DOS RESTAURANTES A SEGUIR PARA AVALIAR\n");
+            Console.WriteLine("DIGITE UM DOS RESTAURANTES A SEGUIR PARA AVALIAR\n");
             listVendors(true);
-            
-            while(choosen < tempMemory.vendor.Rows.Count && choosen >= 0){
-                Console.WriteLine("\n***Digite um fornecedor válido***")
-            }      
+            int choosen, stars;
+            while(!int.TryParse(Console.ReadLine(), out choosen) && choosen < tempMemory.vendor.Rows.Count && choosen >= 0){
+                Console.WriteLine("\n***Digite um valor válido***");
+            }
+
+            Console.WriteLine("DIGITE UMA NOTA DE 1 a 5");
+            while(!int.TryParse(Console.ReadLine(), out stars) && stars <= 5 && stars >= 0){
+                Console.WriteLine("\n***Digite um valor válido***");
+            }
+
+            tempMemory.vendor.Rows[choosen][2] = (Convert.ToDecimal(tempMemory.vendor.Rows[choosen][2]) + stars) / 2;
+
+            Console.WriteLine("AVALIADO COM SUCESSO!\n\n");
         }
-        public void listCart(){
+        public void listCart(decimal frete = -1, bool askMoreOrPay = true){
             decimal total = 0;
             Console.WriteLine("\n[Restaurante] Descrição : Qnt : Vlr Uni : Vlr Total");
             Console.WriteLine("-----------------------------------------------------");
             foreach(DataRow item in tempMemory.cart.Rows){
-                string foodName = tempMemory.food.Rows[Convert.ToInt32(item[1])][1].ToString();
-                string vendorName = tempMemory.vendor.Rows[Convert.ToInt32(item[0])][1].ToString();
-                string foodQnt = item[2].ToString();
-                string foodValue = tempMemory.food.Rows[Convert.ToInt32(item[1])][3].ToString();
+                object foodName = tempMemory.food.Rows[Convert.ToInt32(item[1])][1];
+                object vendorName = tempMemory.vendor.Rows[Convert.ToInt32(item[0])][1];
+                object foodQnt = item[2];
+                object foodValue = tempMemory.food.Rows[Convert.ToInt32(item[1])][3];
                 Console.WriteLine($"[{vendorName}] {foodName} : {foodQnt} : R${foodValue} : R${Convert.ToDecimal(foodValue) * Convert.ToDecimal(foodQnt)}");
                 total += Convert.ToDecimal(foodValue) * Convert.ToDecimal(foodQnt);
+            }
+            if(frete >= 0) {
+                total += frete;
+                Console.WriteLine($"VALOR FRETE: R${frete}");
             }
             Console.WriteLine($"=====VALOR TOTAL: R${total}=====\n");
             Console.WriteLine("Pressione enter para continuar.");
             Console.ReadKey();
 
-            if(addMoreOrPay() == 2) payment.pay();
+            if(askMoreOrPay && addMoreOrPay() == 2) payment.pay();
         }
         public int addMoreOrPay(){
             Console.WriteLine("Deseja adicionar mais itens ao carrinho ou deseja finalizar o pedido? \n[1] - ADIONAR MAIS ITENS\n[2] - FINALIZAR PEDIDO");
