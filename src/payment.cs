@@ -44,7 +44,8 @@ namespace payment{
                 Console.WriteLine("*EM ATÉ 60 MINUTOS O PEDIDO SERÁ ENTREGUE EM SEU ENDEREÇO.");
                 Console.WriteLine("**O PAGAMENTO SERÁ REALIZADO NO MOMENTO DA ENTREGA");
                 Console.WriteLine("#######################################################");
-                Console.WriteLine("Sistema voltando ao início....\n\n\n\n\n");
+                Console.WriteLine("Sistema voltando ao início...\nPressione ENTER\n\n\n\n");
+                Console.ReadKey();
                 temp.tempMemory.cart.Rows.Clear();
                 return true;
             }else{

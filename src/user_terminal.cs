@@ -42,17 +42,23 @@ namespace user_terminal
     }
 
     public class maintenceText{
+        user_terminal.consumerText consumer = new user_terminal.consumerText();
+        maintence.action action = new maintence.action();
+        function.function func = new function.function();
         public int option(){
             int selectedOption;
 
             while(true){
                 Console.WriteLine("\nDIGITE A OPÇÃO DESEJADA:");
-                Console.WriteLine("[1] - Inserir vendedor");
+                Console.WriteLine("[1] - Inserir restaurante");
+                Console.WriteLine("[2] - Excluir restaurante");
+                Console.WriteLine("[3] - Inserir prato");
+                Console.WriteLine("[4] - Excluir prato");
                 Console.WriteLine("");  
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption <= 1 && selectedOption >= 1) break;
+                if(nulo && selectedOption <= 4 && selectedOption >= 1) break;
                 else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
             
@@ -65,9 +71,76 @@ namespace user_terminal
             if(name == null) name = "";
             return name;
         }
+
+        public int delVendor(){
+            consumerText consumerText = new consumerText();
+            consumerText.listVendors(true);
+            Console.WriteLine("DIGITE O CÓDIGO DO VENDEDOR A SER EXCLUÍDO: ");
+            Console.WriteLine("Para cancelar, digite [-1]");
+            int cod;
+            while(!int.TryParse(Console.ReadLine(), out cod)){
+                Console.WriteLine("VALOR DIGITADO ESTÁ INCORRETO, VERIFIQUE.");
+            }
+            return cod;
+        }
+
+        public void addFood(){
+            consumerText consumerText = new consumerText();
+            consumerText.listVendors(true);
+            Console.WriteLine("DIGITE O CÓDIGO DO RESTURANTE A QUE SERÁ ADICIONADO O PRATO: ");
+            Console.WriteLine("Para cancelar, digite [-1]");
+            int cod;
+            while(!int.TryParse(Console.ReadLine(), out cod)){
+                Console.WriteLine("VALOR DIGITADO ESTÁ INCORRETO, VERIFIQUE.");
+            }
+            if(cod == -1) return;
+
+            Console.Write("DIGITE O NOME DO PRATO: ");
+            string name = Console.ReadLine()!;
+            Console.WriteLine("DIGITE O TIPO DO PRATO, SENDO UM DA LISTA ABAIXO:");
+            foreach(DataRow row in tempMemory.foodType.Rows){
+                Console.WriteLine($"[{row[0]} - {row[1]}]");
+            }
+
+            int codFoodType;
+            while(!int.TryParse(Console.ReadLine(), out codFoodType) && !func.codExist(codFoodType, tempMemory.foodType)){
+                if(codFoodType == -1) return;
+                Console.WriteLine("Opção digitada inválida. (Digite [-1] para cancelar)");
+            }
+
+            Console.Write("DIGITE O VALOR DO PRATO: ");
+            decimal foodValue;
+            while(!decimal.TryParse(Console.ReadLine(), out foodValue)){
+                Console.WriteLine("Valor digitado inválido.");
+            }
+
+            action.addFood(name, foodValue, codFoodType, cod);
+        }
+
+        public void delFood(){
+            consumerText consumerText = new consumerText();
+            consumerText.listVendors(true);
+            Console.WriteLine("DIGITE O CÓDIGO DO RESTURANTE A QUE SERÁ EXCLUÍDO O PRATO: ");
+            Console.WriteLine("Para cancelar, digite [-1]");
+            int cod;
+            while(!int.TryParse(Console.ReadLine(), out cod)){
+                Console.WriteLine("VALOR DIGITADO ESTÁ INCORRETO, VERIFIQUE.");
+            }
+            if(cod == -1) return;
+            consumer.option_availableFood(cod, "vendor", true);
+            Console.WriteLine("DIGITE O CÓDIGO DO PRATO A SER EXCLUÍDO");
+            int codFood;
+            while(!int.TryParse(Console.ReadLine(), out codFood) && !func.codExist(codFood, tempMemory.food) && tempMemory.food.Rows[func.findIndexByCod(codFood, tempMemory.food)][4].ToString() == cod.ToString()){
+                if(codFood == -1) return;
+                Console.WriteLine("Opção digitada inválida. (Digite [-1] para cancelar)");
+            }
+            
+            action.delFood(codFood);
+        }
     }
 
     public class consumerText{
+        function.function function  = new function.function();
         consumer.action action = new consumer.action();
         payment.payment payment = new payment.payment();
         public int option_filter(){
@@ -81,7 +154,7 @@ namespace user_terminal
                 Console.WriteLine("[2] - Tipo de Comida");
 
                 Console.WriteLine("\nOUTRAS OPÇÕES:");
-                Console.WriteLine("\n[3] - Carrinho");
+                Console.WriteLine("[3] - Carrinho");
                 Console.WriteLine("[4] - Avaliar um Restaurante");
 
                 Console.WriteLine("\n[-1] - Voltar");
@@ -95,11 +168,12 @@ namespace user_terminal
             
             return selectedOption;
         }
-        public int option_availableFood(int cod, string filter){
+        public int option_availableFood(int cod, string filter, bool justList = false){
             int selectedOption;
 
             while(true){
                 Console.WriteLine("\nSELECIONE A COMIDA DESEJADA DO CARDÁPIO:\n");
+
                 foreach(DataRow row in tempMemory.food.Rows){
                     if(row[4].ToString() == cod.ToString() && filter == "vendor"){
                         Console.WriteLine($"[{row[0]}] - {row[1]} : R${row[3]}");
@@ -110,12 +184,18 @@ namespace user_terminal
                     }
                 }
 
+                if(justList) return 0;
+
                 Console.WriteLine("\n[-1] - Voltar\n");
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption < tempMemory.food.Rows.Count && selectedOption >= 0) break;
-                else if(goBack(selectedOption)) return -1;
+                if(goBack(selectedOption)) return -1;
+                if(!function.codExist(selectedOption, temp.tempMemory.food)){
+                    Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
+                    continue;
+                } 
+                if(nulo && function.codExist(selectedOption, tempMemory.food) && selectedOption >= 0 && (tempMemory.food.Rows[function.findIndexByCod(selectedOption, tempMemory.food)][4].ToString() == cod.ToString() && filter == "vendor") || (tempMemory.food.Rows[function.findIndexByCod(selectedOption, tempMemory.food)][2].ToString() == cod.ToString() && filter == "foodType") ) break;
                 else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
             
@@ -136,8 +216,9 @@ namespace user_terminal
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption < tempMemory.foodType.Rows.Count && selectedOption >= 0) break;
-                else if (goBack(selectedOption)) return;
+                if (goBack(selectedOption)) return;
+
+                if(nulo && function.codExist(selectedOption, tempMemory.food) && selectedOption >= 0) break;
                 else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
 
@@ -162,14 +243,15 @@ namespace user_terminal
 
                 bool nulo = int.TryParse(Console.ReadLine(), out selectedOption);
 
-                if(nulo && selectedOption < tempMemory.vendor.Rows.Count && selectedOption >= 0) break;
-                else if (goBack(selectedOption)) return;
+                if (goBack(selectedOption)) return;
+
+                if(nulo && function.codExist(selectedOption, tempMemory.vendor) && selectedOption >= 0) break;
                 else Console.WriteLine("\n***Opção digitada inválida, por favor, digite uma opção válida***\n");
             }
 
             int foodOption;
             if(selectedOption != -1) {
-                foodOption = option_availableFood(Convert.ToInt32(temp.tempMemory.vendor.Rows[selectedOption][0]), "vendor");
+                foodOption = option_availableFood(selectedOption, "vendor");
                 if(foodOption != -1) addToCart(foodOption);
             }
         }
@@ -181,9 +263,9 @@ namespace user_terminal
                 Console.WriteLine("Valor digitado inválido.");
             }
 
-            action.addToCart(Convert.ToInt32(tempMemory.food.Rows[codFood][4]), codFood, qntSelectedFood);
-
-            Console.WriteLine($"\n{qntSelectedFood} unidade(s) de {tempMemory.food.Rows[codFood][1]}, do restaurante {tempMemory.vendor.Rows[Convert.ToInt32(tempMemory.food.Rows[codFood][4])][1]}, no valor unitário de R${tempMemory.food.Rows[codFood][3]} (total R${Convert.ToDecimal(tempMemory.food.Rows[codFood][3]) * qntSelectedFood}) foram adicionados ao carrinho!\n");
+            action.addToCart(Convert.ToInt32(tempMemory.food.Rows[function.findIndexByCod(codFood, tempMemory.food)][4]), codFood, qntSelectedFood);
+            Console.WriteLine($"{function.findIndexByCod(codFood, tempMemory.food)} - {tempMemory.food.Rows.Count}");
+            Console.WriteLine($"\n{qntSelectedFood} unidade(s) de {tempMemory.food.Rows[function.findIndexByCod(codFood, tempMemory.food)][1]}, do restaurante {tempMemory.vendor.Rows[function.findIndexByCod(Convert.ToInt32(tempMemory.food.Rows[function.findIndexByCod(codFood, tempMemory.food)][4]), tempMemory.vendor)][1]}, no valor unitário de R${tempMemory.food.Rows[function.findIndexByCod(codFood, tempMemory.food)][3]} (total R${Convert.ToDecimal(tempMemory.food.Rows[function.findIndexByCod(codFood, tempMemory.food)][3]) * qntSelectedFood}) foram adicionados ao carrinho!\n");
 
             if(addMoreOrPay() == 1) navigation();
             else payment.pay();
@@ -215,7 +297,7 @@ namespace user_terminal
             Console.WriteLine("DIGITE UM DOS RESTAURANTES A SEGUIR PARA AVALIAR\n");
             listVendors(true);
             int choosen, stars;
-            while(!int.TryParse(Console.ReadLine(), out choosen) && choosen < tempMemory.vendor.Rows.Count && choosen >= 0){
+            while(!int.TryParse(Console.ReadLine(), out choosen) && function.codExist(choosen, tempMemory.vendor)){
                 Console.WriteLine("\n***Digite um valor válido***");
             }
 
@@ -233,10 +315,10 @@ namespace user_terminal
             Console.WriteLine("\n[Restaurante] Descrição : Qnt : Vlr Uni : Vlr Total");
             Console.WriteLine("-----------------------------------------------------");
             foreach(DataRow item in tempMemory.cart.Rows){
-                object foodName = tempMemory.food.Rows[Convert.ToInt32(item[1])][1];
-                object vendorName = tempMemory.vendor.Rows[Convert.ToInt32(item[0])][1];
+                object foodName = tempMemory.food.Rows[function.findIndexByCod(Convert.ToInt32(item[1]), tempMemory.food)][1];
+                object vendorName = tempMemory.vendor.Rows[function.findIndexByCod(Convert.ToInt32(item[0]), tempMemory.vendor)][1];
                 object foodQnt = item[2];
-                object foodValue = tempMemory.food.Rows[Convert.ToInt32(item[1])][3];
+                object foodValue = tempMemory.food.Rows[function.findIndexByCod(Convert.ToInt32(item[1]), tempMemory.food)][3];
                 Console.WriteLine($"[{vendorName}] {foodName} : {foodQnt} : R${foodValue} : R${Convert.ToDecimal(foodValue) * Convert.ToDecimal(foodQnt)}");
                 total += Convert.ToDecimal(foodValue) * Convert.ToDecimal(foodQnt);
             }
@@ -245,10 +327,11 @@ namespace user_terminal
                 Console.WriteLine($"VALOR FRETE: R${frete}");
             }
             Console.WriteLine($"=====VALOR TOTAL: R${total}=====\n");
-            Console.WriteLine("Pressione enter para continuar.");
-            Console.ReadKey();
+            Console.WriteLine("Pressione enter para continuar ou digite [0] para limpar o carrinho.");
+            string option = Console.ReadLine()!;
+            if(option == "0") tempMemory.cart.Rows.Clear();            
 
-            if(askMoreOrPay && addMoreOrPay() == 2) payment.pay();
+            if(askMoreOrPay && tempMemory.cart.Rows.Count != 0 && addMoreOrPay() == 2) payment.pay();
         }
         public int addMoreOrPay(){
             Console.WriteLine("Deseja adicionar mais itens ao carrinho ou deseja finalizar o pedido? \n[1] - ADIONAR MAIS ITENS\n[2] - FINALIZAR PEDIDO");
